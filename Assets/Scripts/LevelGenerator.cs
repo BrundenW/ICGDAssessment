@@ -14,7 +14,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject outsideWall;
     public GameObject insideWall;
     public GameObject junction;
-    private int[,] levelMap = new int [,]
+    private int[,] levelMap = new int[,]
         {
             {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
             {2,5,5,5,5,5,5,5,5,5,5,5,5,4},
@@ -32,6 +32,13 @@ public class LevelGenerator : MonoBehaviour
             {2,2,2,2,2,1,5,3,3,0,4,0,0,0},
             {0,0,0,0,0,0,5,0,0,0,4,0,0,0},
         };
+        /*{
+            {1, 2, 7, 7, 2 },
+            {2, 5, 5, 5, 5 },
+            {2, 5, 3, 3, 5 },
+            {2, 5, 3, 3, 5 },
+            {2, 5, 5, 5, 5 },
+        };*/
     private List<GameObject> mapList = new List<GameObject>();
     private float width;
     private float height;
@@ -46,7 +53,7 @@ public class LevelGenerator : MonoBehaviour
         Vector3 rotation2;
         Vector3 rotation3;
         Vector3 rotation4;
-        for (int i = 0; i < height - 1; i++)
+        for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {
@@ -95,27 +102,15 @@ public class LevelGenerator : MonoBehaviour
                 //Outside Wall
                 else if (levelMap[i, j] == 2)
                 {
-                    if (j == 0)
+                    int[] test = adjacent(i, j);
+                    if ((test[1] == test[2] || test[0] != test[3] || (test[0] == test[3] && test[0] == 0) || ((test[1] == 1 || test[1] == 3) && (test[2] == 2 || test[2] == 4 || test[2] == 3))) 
+                        && (test[1] == 1 || test[2] == 1 || test[1] == 3))
                     {
-                        if (levelMap[i, j + 1] == 1 || levelMap[i, j + 1] == 2 || levelMap[i, j + 1] == 7)
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                        }
+                        rotation1 = new Vector3(0, 0, 90);
                     }
                     else
                     {
-                        if (levelMap[i, j - 1] == 1 || levelMap[i, j - 1] == 2 || levelMap[i, j - 1] == 7)
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                        }
+                        rotation1 = new Vector3(0, 0, 0);
                     }
                     mapList.Add(Instantiate(outsideWall, new Vector3(j, -i, 0f), Quaternion.Euler(rotation1)));
                     mapList.Add(Instantiate(outsideWall, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(rotation1)));
@@ -127,10 +122,8 @@ public class LevelGenerator : MonoBehaviour
                 {
                     if ((i != 0 && i < height - 1 && (levelMap[i - 1, j] == 3 || levelMap[i - 1, j] == 4) && (i != 0 && (levelMap[i + 1, j] == 3 || levelMap[i + 1, j] == 4))))
                     {
-                        Debug.Log("test");
                         if (j != 0 && levelMap[i - 1, j - 1] != 3 && levelMap[i - 1, j - 1] != 4)
                         {
-                            Debug.Log("test1");
                             rotation1 = new Vector3(0, 0, 180);
                             rotation2 = new Vector3(0, 0, 90);
                             rotation3 = new Vector3(0, 0, 270);
@@ -152,7 +145,6 @@ public class LevelGenerator : MonoBehaviour
                         }
                         else
                         {
-                            Debug.Log("test4");
                             rotation1 = new Vector3(0, 0, 0);
                             rotation2 = new Vector3(0, 0, 270);
                             rotation3 = new Vector3(0, 0, 90);
@@ -202,28 +194,14 @@ public class LevelGenerator : MonoBehaviour
                 //Inside Wall
                 else if (levelMap[i, j] == 4)
                 {
-                    if (levelMap[i - 1, j] == 3 || levelMap[i - 1, j] == 4 || levelMap[i - 1, j] == 7)
+                    int[] test = adjacent(i, j);
+                    if ((test[1] == test[2] || test[0] != test[3] || (test[0] == test[3] && test[0] == 0)) && (test[1] == 2 || test[2] == 2))
                     {
-                        if (levelMap[i, j - 1] != 3 && levelMap[i, j - 1] != 4 && levelMap[i, j - 1] != 7)
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                        }
-                        else if (j == width - 1)
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                        }
-                        else if (levelMap[i, j + 1] != 3 && levelMap[i, j + 1] != 4 && levelMap[i, j + 1] != 7)
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                        }
+                        rotation1 = new Vector3(0, 0, 90);
                     }
                     else
                     {
-                        rotation1 = new Vector3(0, 0, 90);
+                        rotation1 = new Vector3(0, 0, 0);
                     }
                     mapList.Add(Instantiate(insideWall, new Vector3(j, -i, 0f), Quaternion.Euler(rotation1)));
                     mapList.Add(Instantiate(insideWall, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(rotation1)));
@@ -312,8 +290,43 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-    void rotation()
+    private int[] adjacent(int fromTop, int fromLeft)
     {
+        int[] adjacents = new int[4];
+        if (fromTop == 0)
+            adjacents[0] = -1;
+        else
+            adjacents[0] = levelMap[fromTop - 1, fromLeft];
+        if (fromLeft == 0)
+            adjacents[1] = -1;
+        else
+            adjacents[1] = levelMap[fromTop, fromLeft - 1];
+        if (fromLeft == width-1)
+            adjacents[2] = -1;
+        else
+            adjacents[2] = levelMap[fromTop, fromLeft + 1];
+        if (fromTop == height-1)
+            adjacents[3] = -1;
+        else
+            adjacents[3] = levelMap[fromTop + 1, fromLeft];
+        return wallType(adjacents);
+    }
 
+    private int[] wallType(int[] adjacents)
+    {
+        for (int i = 0; i < adjacents.GetLength(0); i++)
+        {
+            if (adjacents[i] == 1 || adjacents[i] == 2)
+                adjacents[i] = 1;
+            else if (adjacents[i] == 3 || adjacents[i] == 4)
+                adjacents[i] = 2;
+            else if (adjacents[i] == 7)
+                adjacents[i] = 3;
+            else if (adjacents[i] == -1)
+                adjacents[i] = 4;
+            else
+                adjacents[i] = 0;
+        }
+        return adjacents;
     }
 }
