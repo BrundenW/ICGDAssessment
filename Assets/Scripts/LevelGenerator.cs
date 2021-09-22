@@ -51,8 +51,6 @@ public class LevelGenerator : MonoBehaviour
         width = levelMap.GetLength(1);
         Vector3 rotation1;
         Vector3 rotation2;
-        Vector3 rotation3;
-        Vector3 rotation4;
         for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
@@ -60,44 +58,25 @@ public class LevelGenerator : MonoBehaviour
                 //Outside Corner
                 if (levelMap[i, j] == 1)
                 {
+                    List<int> rotations = new List<int>();
                     if (i != 0 && (levelMap[i - 1, j] == 1 || levelMap[i - 1, j] == 2))
                     {
                         if (j != 0 && (levelMap[i, j - 1] == 1 || levelMap[i, j - 1] == 2))
-                        {
-                            rotation1 = new Vector3(0, 0, 180);
-                            rotation2 = new Vector3(0, 0, 90);
-                            rotation3 = new Vector3(0, 0, 270);
-                            rotation4 = new Vector3(0, 0, 0);
-                        }
+                            rotations.AddRange(rotationOrder(2));
                         else
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                            rotation2 = new Vector3(0, 0, 180);
-                            rotation3 = new Vector3(0, 0, 0);
-                            rotation4 = new Vector3(0, 0, 270);
-                        }
+                            rotations.AddRange(rotationOrder(-3));
                     }
                     else
                     {
                         if (j != 0 && (levelMap[i, j - 1] == 1 || levelMap[i, j - 1] == 2))
-                        {
-                            rotation1 = new Vector3(0, 0, 270);
-                            rotation2 = new Vector3(0, 0, 0);
-                            rotation3 = new Vector3(0, 0, 180);
-                            rotation4 = new Vector3(0, 0, 90);
-                        }
+                            rotations.AddRange(rotationOrder(4));
                         else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                            rotation2 = new Vector3(0, 0, 270);
-                            rotation3 = new Vector3(0, 0, 90);
-                            rotation4 = new Vector3(0, 0, 180);
-                        }
+                            rotations.AddRange(rotationOrder(-1));
                     }
-                    mapList.Add(Instantiate(outsideCorner, new Vector3(j, -i, 0f), Quaternion.Euler(rotation1)));
-                    mapList.Add(Instantiate(outsideCorner, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(rotation2)));
-                    mapList.Add(Instantiate(outsideCorner, new Vector3(j, -(height * 2 - i - 2), 0f), Quaternion.Euler(rotation3)));
-                    mapList.Add(Instantiate(outsideCorner, new Vector3(width * 2 - j - 1, -(height * 2 - i - 2), 0f), Quaternion.Euler(rotation4)));
+                    mapList.Add(Instantiate(outsideCorner, new Vector3(j, -i, 0f), Quaternion.Euler(0, 0, rotations[0])));
+                    mapList.Add(Instantiate(outsideCorner, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(0, 0, rotations[1])));
+                    mapList.Add(Instantiate(outsideCorner, new Vector3(j, -(height * 2 - i - 2), 0f), Quaternion.Euler(0, 0, rotations[2])));
+                    mapList.Add(Instantiate(outsideCorner, new Vector3(width * 2 - j - 1, -(height * 2 - i - 2), 0f), Quaternion.Euler(0, 0, rotations[3])));
                 }
                 //Outside Wall
                 else if (levelMap[i, j] == 2)
@@ -120,76 +99,36 @@ public class LevelGenerator : MonoBehaviour
                 //Inside Corner
                 else if (levelMap[i, j] == 3)
                 {
+                    List<int> rotations = new List<int>();
                     if ((i != 0 && i < height - 1 && (levelMap[i - 1, j] == 3 || levelMap[i - 1, j] == 4) && (i != 0 && (levelMap[i + 1, j] == 3 || levelMap[i + 1, j] == 4))))
                     {
                         if (j != 0 && levelMap[i - 1, j - 1] != 3 && levelMap[i - 1, j - 1] != 4)
-                        {
-                            rotation1 = new Vector3(0, 0, 180);
-                            rotation2 = new Vector3(0, 0, 90);
-                            rotation3 = new Vector3(0, 0, 270);
-                            rotation4 = new Vector3(0, 0, 0);
-                        }
+                            rotations.AddRange(rotationOrder(2));
                         else if (j != 0 && levelMap[i + 1, j - 1] != 3 && levelMap[i + 1, j - 1] != 4)
-                        {
-                            rotation1 = new Vector3(0, 0, 270);
-                            rotation2 = new Vector3(0, 0, 0);
-                            rotation3 = new Vector3(0, 0, 180);
-                            rotation4 = new Vector3(0, 0, 90);
-                        }
+                            rotations.AddRange(rotationOrder(4));
                         else if (j != 0 && j < width - 1 && levelMap[i - 1, j + 1] != 3 && levelMap[i - 1, j + 1] != 4)
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                            rotation2 = new Vector3(0, 0, 180);
-                            rotation3 = new Vector3(0, 0, 0);
-                            rotation4 = new Vector3(0, 0, 270);
-                        }
+                            rotations.AddRange(rotationOrder(-3));
                         else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                            rotation2 = new Vector3(0, 0, 270);
-                            rotation3 = new Vector3(0, 0, 90);
-                            rotation4 = new Vector3(0, 0, 180);
-                        }
+                            rotations.AddRange(rotationOrder(-1));
                     }
                     else if (i != 0 && (levelMap[i - 1, j] == 3 || levelMap[i - 1, j] == 4))
                     {
                         if (j != 0 && (levelMap[i, j - 1] == 3 || levelMap[i, j - 1] == 4))
-                        {
-                            rotation1 = new Vector3(0, 0, 180);
-                            rotation2 = new Vector3(0, 0, 90);
-                            rotation3 = new Vector3(0, 0, 270);
-                            rotation4 = new Vector3(0, 0, 0);
-                        }
+                            rotations.AddRange(rotationOrder(2));
                         else
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                            rotation2 = new Vector3(0, 0, 180);
-                            rotation3 = new Vector3(0, 0, 0);
-                            rotation4 = new Vector3(0, 0, 270);
-                        }
+                            rotations.AddRange(rotationOrder(-3));
                     }
                     else
                     {
                         if (j != 0 && (levelMap[i, j - 1] == 3 || levelMap[i, j - 1] == 4))
-                        {
-
-                            rotation1 = new Vector3(0, 0, 270);
-                            rotation2 = new Vector3(0, 0, 0);
-                            rotation3 = new Vector3(0, 0, 180);
-                            rotation4 = new Vector3(0, 0, 90);
-                        }
+                            rotations.AddRange(rotationOrder(4));
                         else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                            rotation2 = new Vector3(0, 0, 270);
-                            rotation3 = new Vector3(0, 0, 90);
-                            rotation4 = new Vector3(0, 0, 180);
-                        }
+                            rotations.AddRange(rotationOrder(-1));
                     }
-                    mapList.Add(Instantiate(insideCorner, new Vector3(j, -i, 0f), Quaternion.Euler(rotation1)));
-                    mapList.Add(Instantiate(insideCorner, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(rotation2)));
-                    mapList.Add(Instantiate(insideCorner, new Vector3(j, -(height * 2 - i - 2), 0f), Quaternion.Euler(rotation3)));
-                    mapList.Add(Instantiate(insideCorner, new Vector3(width * 2 - j - 1, -(height * 2 - i - 2), 0f), Quaternion.Euler(rotation4)));
+                    mapList.Add(Instantiate(insideCorner, new Vector3(j, -i, 0f), Quaternion.Euler(0, 0, rotations[0])));
+                    mapList.Add(Instantiate(insideCorner, new Vector3(width * 2 - j - 1, -i, 0f), Quaternion.Euler(0, 0, rotations[1])));
+                    mapList.Add(Instantiate(insideCorner, new Vector3(j, -(height * 2 - i - 2), 0f), Quaternion.Euler(0, 0, rotations[2])));
+                    mapList.Add(Instantiate(insideCorner, new Vector3(width * 2 - j - 1, -(height * 2 - i - 2), 0f), Quaternion.Euler(0, 0, rotations[3])));
                 }
                 //Inside Wall
                 else if (levelMap[i, j] == 4)
@@ -227,64 +166,48 @@ public class LevelGenerator : MonoBehaviour
                 //Junction
                 else if (levelMap[i, j] == 7)
                 {
+                    bool test = false;
                     if (i != 0 && (levelMap[i - 1, j] == 1 || levelMap[i - 1, j] == 2))
                     {
+                        rotation1 = new Vector3(0, 0, 180);
+                        rotation2 = new Vector3(0, 0, 0);
                         if (j != 0 && (levelMap[i, j - 1] == 3 || levelMap[i, j - 1] == 4))
                         {
-                            rotation1 = new Vector3(0, 0, 180);
-                            rotation2 = new Vector3(0, 0, 0);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 180);
-                            rotation2 = new Vector3(0, 0, 0);
+                            test = true;
                         }
                     }
                     else if (i != 0 && (levelMap[i - 1, j] == 3 || levelMap[i - 1, j] == 4))
                     {
+                        rotation1 = new Vector3(0, 0, 90);
+                        rotation2 = new Vector3(0, 0, 270);
                         if (j != 0 && (levelMap[i, j - 1] == 1 || levelMap[i, j - 1] == 2))
                         {
-                            rotation1 = new Vector3(0, 0, 90);
-                            rotation2 = new Vector3(0, 0, 270);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 90);
-                            rotation2 = new Vector3(0, 0, 270);
+                            test = true;
                         }
                     }
                     else if (i < height - 1 && (levelMap[i + 1, j] == 1 || levelMap[i + 1, j] == 2))
                     {
+                        rotation1 = new Vector3(0, 0, 0);
+                        rotation2 = new Vector3(0, 0, 180);
                         if (j != 0 && (levelMap[i, j - 1] == 3 || levelMap[i, j - 1] == 4))
                         {
-                            rotation1 = new Vector3(0, 0, 0);
-                            rotation2 = new Vector3(0, 0, 180);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 0);
-                            rotation2 = new Vector3(0, 0, 180);
+                            test = true;
                         }
                     }
                     else
                     {
+                        rotation1 = new Vector3(0, 0, 270);
+                        rotation2 = new Vector3(0, 0, 90);
                         if (j != 0 && (levelMap[i, j - 1] == 1 || levelMap[i, j - 1] == 2))
                         {
-                            rotation1 = new Vector3(0, 0, 270);
-                            rotation2 = new Vector3(0, 0, 90);
-                        }
-                        else
-                        {
-                            rotation1 = new Vector3(0, 0, 270);
-                            rotation2 = new Vector3(0, 0, 90);
+                            test = true;
                         }
                     }
                     mapList.Add(Instantiate(junction, new Vector3(j, (float)(i - 0.4), 0f), Quaternion.Euler(rotation1)));
                     mapList.Add(Instantiate(junction, new Vector3(width * 2 - j - 1, (float)(i - 0.4), 0f), Quaternion.Euler(rotation1)));
                     mapList.Add(Instantiate(junction, new Vector3(j, -(float)(height * 2 - i - 2 - 0.4), 0f), Quaternion.Euler(rotation2)));
                     mapList.Add(Instantiate(junction, new Vector3(width * 2 - j - 1, -(float)(height * 2 - i - 2 - 0.4), 0f), Quaternion.Euler(rotation2)));
-                    mapList[mapList.Count - 3].transform.localScale = new Vector3(1, -1, 1);
-                    mapList[mapList.Count - 2].transform.localScale = new Vector3(1, -1, 1);
+                    junctionFlip(test);
                 }
             }
         }
@@ -328,5 +251,49 @@ public class LevelGenerator : MonoBehaviour
                 adjacents[i] = 0;
         }
         return adjacents;
+    }
+
+    private List<int> rotationOrder(int number)
+    {
+        List<int> order = new List<int>();
+        while (order.Count < 4)
+        {
+            if (number == 1 || number == -1)
+            {
+                order.Add(0);
+            }
+            else if (number == 2 || number == -2)
+            {
+                order.Add(180);
+            }
+            else if (number == 3 || number == -3)
+            {
+                order.Add(90);
+            }
+            else
+            {
+                order.Add(270);
+                if (number == 4)
+                    number = 0;
+                else
+                    number = -4;
+            }
+            number++;
+        }
+        return order;
+    }
+
+    private void junctionFlip(bool indicator)
+    {
+        if (indicator)
+        {
+            mapList[mapList.Count - 3].transform.localScale = new Vector3(1, -1, 1);
+            mapList[mapList.Count - 2].transform.localScale = new Vector3(1, -1, 1);
+        }
+        else
+        {
+            mapList[mapList.Count - 4].transform.localScale = new Vector3(1, -1, 1);
+            mapList[mapList.Count - 1].transform.localScale = new Vector3(1, -1, 1);
+        }
     }
 }
