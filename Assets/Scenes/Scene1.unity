@@ -7564,6 +7564,7 @@ MonoBehaviour:
   outsideWall: {fileID: 6819316512183314228, guid: cc493464cb9942942b40cc294f22323f, type: 3}
   insideWall: {fileID: 5962450798866325200, guid: 33ab83ee44c3cfb41a1d2c54746c9b6c, type: 3}
   junction: {fileID: 248487147840496815, guid: 412fa8c617cce5d4ea68f518976d62a5, type: 3}
+  parent: {fileID: 1503319801}
 --- !u!1 &968127488
 GameObject:
   m_ObjectHideFlags: 0
@@ -10574,6 +10575,36 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1503319801
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1503319802}
+  m_Layer: 0
+  m_Name: Autogen Map
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1503319802
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503319801}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1515246820
 GameObject:
   m_ObjectHideFlags: 0
