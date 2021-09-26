@@ -4334,18 +4334,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593097283}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  m_LocalPosition: {x: 2, y: -1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalPosition: {x: 3, y: -2, z: 0}
+  m_LocalPosition: {x: 2, y: -2, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
->>>>>>> Stashed changes
-=======
-  m_LocalPosition: {x: 5, y: -2, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
->>>>>>> Feature-LevelGenerator
   m_Children: []
   m_Father: {fileID: 1074204882}
   m_RootOrder: 3
@@ -8363,7 +8353,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1074204882}
   m_Layer: 0
-  m_Name: Characters
+  m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8377,15 +8367,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1074204881}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  m_LocalPosition: {x: 20, y: -5, z: 0}
-=======
-  m_LocalPosition: {x: -5, y: 0, z: 0}
->>>>>>> Stashed changes
-=======
-  m_LocalPosition: {x: 11, y: -13, z: 0}
->>>>>>> Feature-LevelGenerator
+  m_LocalPosition: {x: -4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6197634}
@@ -9129,18 +9111,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161997746}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-  m_LocalPosition: {x: 0, y: -1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-=======
-  m_LocalPosition: {x: 3, y: 0, z: 0}
+  m_LocalPosition: {x: 2, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
->>>>>>> Stashed changes
-=======
-  m_LocalPosition: {x: 5, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
->>>>>>> Feature-LevelGenerator
   m_Children: []
   m_Father: {fileID: 1074204882}
   m_RootOrder: 1
@@ -10604,11 +10576,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Feature-LevelGenerator
 --- !u!1 &1503319801
 GameObject:
   m_ObjectHideFlags: 0
@@ -10637,14 +10604,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-<<<<<<< HEAD
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> Stashed changes
-=======
-  m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> Feature-LevelGenerator
 --- !u!1 &1515246820
 GameObject:
   m_ObjectHideFlags: 0
@@ -13544,7 +13505,6 @@ GameObject:
   - component: {fileID: 2010530060}
   - component: {fileID: 2010530059}
   - component: {fileID: 2010530058}
-  - component: {fileID: 2010530061}
   m_Layer: 0
   m_Name: Pac-Student (1)
   m_TagString: Untagged
@@ -13560,7 +13520,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2010530057}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 442818ba654ab8946848d35a2740c2b9, type: 2}
   m_CullingMode: 0
@@ -13630,37 +13590,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2010530057}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: -0.01}
+  m_LocalPosition: {x: 0, y: -4, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_Children: []
-<<<<<<< Updated upstream
-  m_Father: {fileID: 0}
-<<<<<<< HEAD
-  m_RootOrder: 7
-=======
   m_Father: {fileID: 1074204882}
   m_RootOrder: 4
->>>>>>> Stashed changes
-=======
-  m_RootOrder: 6
->>>>>>> Feature-LevelGenerator
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &2010530061
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2010530057}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 1767f8647f2fea64580bfa755c206d70, type: 2}
-  m_Animations:
-  - {fileID: 7400000, guid: 1767f8647f2fea64580bfa755c206d70, type: 2}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!1 &2018674599
 GameObject:
   m_ObjectHideFlags: 0
