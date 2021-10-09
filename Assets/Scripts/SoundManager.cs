@@ -6,7 +6,9 @@ public class SoundManager : MonoBehaviour
 {
 
     public AudioClip IntroMusic;
-    public AudioClip BackgroundMusic;
+    public AudioClip RegularBackgroundMusic;
+    public AudioClip ScaredBackgroundMusic;
+    public AudioClip DeadBackgroundMusic;
     private AudioSource source;
 
     // Start is called before the first frame update
@@ -28,7 +30,7 @@ public class SoundManager : MonoBehaviour
         source.clip = IntroMusic;
         source.Play();
         yield return new WaitForSeconds(source.clip.length);
-        source.clip = BackgroundMusic;
+        source.clip = RegularBackgroundMusic;
         source.Play();
     }
 }
