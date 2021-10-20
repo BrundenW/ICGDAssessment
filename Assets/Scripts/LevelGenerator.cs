@@ -58,8 +58,10 @@ public class LevelGenerator : MonoBehaviour
             {
                 segmentsList.Add(Instantiate(parent, new Vector3(0, -(2*height-2), 0f), Quaternion.identity));
                 segmentsList.Add(Instantiate(parent, new Vector3((2*width - 1), -(2*height-2), 0f), Quaternion.identity));
-                segmentsList[0].transform.localScale = new Vector3(1, -1, 1);
-                segmentsList[1].transform.localScale = new Vector3(-1, -1, 1);
+                //segmentsList[0].transform.localScale = new Vector3(1, -1, 1);
+                segmentsList[0].transform.Rotate(180, 0, 0, Space.World);
+                //segmentsList[1].transform.localScale = new Vector3(-1, -1, 1);
+                segmentsList[1].transform.Rotate(180, 180, 0, Space.World);
             }
             for (int j = 0; j < width; j++)
             {
@@ -185,7 +187,8 @@ public class LevelGenerator : MonoBehaviour
             }
         }
         segmentsList.Add(Instantiate(parent, new Vector3((2*width - 1), 0f, 0f), Quaternion.identity));
-        segmentsList[2].transform.localScale = new Vector3(-1, 1, 1);
+        //segmentsList[2].transform.localScale = new Vector3(-1, 1, 1);
+        segmentsList[2].transform.Rotate(0, 180, 0, Space.World);
     }
 
     private void duplicate(GameObject segment, Vector3 position, Vector3 rotation, bool junctionFlip)
