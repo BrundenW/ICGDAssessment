@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ExitButton
   - Manager
+  - PacStudent
   layers:
   - Default
   - TransparentFX

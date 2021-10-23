@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
-    enum direction { Left, Right, Up, Down}
+    enum direction { left, right, up, down}
     int lastInput;
     int currentInput;
     private Tweener tweener;
@@ -12,21 +12,24 @@ public class PacStudentController : MonoBehaviour
     public Collision right;
     public Collision up;
     public Collision down;
+    private GameObject pac;
 
 
     // Start is called before the first frame update
     void Start()
     {
         //solid = gameObject.GetComponent<Collision1>();
-    }
+        tweener = GetComponent<Tweener>();
+        pac = GameObject.FindGameObjectWithTag("PacStudent");
 
+    }
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
             lastInput = 0;
-            Debug.Log(left.test);
+            //Debug.Log(up.test);
         }
 
         if (Input.GetKeyDown(KeyCode.A))
@@ -37,6 +40,7 @@ public class PacStudentController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             lastInput = 2;
+            Debug.Log("down pressed");
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -44,8 +48,73 @@ public class PacStudentController : MonoBehaviour
             lastInput = 3;
         }
 
-        /*if (!tweener.TweenExists(gameObject.transform))
-        {
+        //if (!tweener.TweenExists(pac.transform))
+        //{
+            if (lastInput == 0)
+            {
+                //Debug.Log("0");
+                if (up.test == false)
+                {
+                    //add tweener up
+                    //Debug.Log("yes");
+                    
+                    Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y + 1, pac.transform.position.z);
+                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
+                        currentInput = 0;
+                }
+                else
+                {
+                    continueMove();
+                }
+            }
+            else if (lastInput == 1)
+            {
+                if (left.test == false)
+                {
+                    //add tweener left
+                    //currentInput = 1;
+                    Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
+                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
+                        currentInput = 1;
+                }
+                else
+                {
+                    continueMove();
+                }
+            }
+            else if (lastInput == 2)
+            {
+                if (down.test == false)
+                {
+                    Debug.Log("not here");
+                    //add tweener down
+                    //currentInput = 2;
+                    Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
+                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
+                        currentInput = 2;
+                }
+                else
+                {
+                    //Debug.Log("Down bad");
+                    continueMove();
+                }
+            }
+            else
+            {
+                if (right.test == false) {
+                    //add tweener right
+                    Debug.Log("right");
+                    //currentInput = 3;
+                    Vector3 temp = new Vector3(pac.transform.position.x + 1, pac.transform.position.y, pac.transform.position.z);
+                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
+                        currentInput = 3;
+                }
+                else
+                {
+                    continueMove();
+                }
+            }
+            
             //bool test = gameObject.transform.GetChild(0).GetComponent<Collision>();
             //check lastInput to see if you can go in that direction {
                 //if you can, currentInput = lastInput;
@@ -53,6 +122,44 @@ public class PacStudentController : MonoBehaviour
             //else {
                 //check currentInput to see if you can go in that direction {
                     //if you can, lerp in currentInput direction
-        }*/
+        //}
+    }
+
+    private void continueMove()
+    {
+        //tweener.AddTween(pac.transform, pac.transform.position, new Vector3(0, 0, 0), 1f);
+        if (currentInput == 0)
+        {
+            if (up.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y + 1, pac.transform.position.z);
+                tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f);
+            }
+        }
+        else if (currentInput == 1)
+        {
+            if (left.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
+                tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f);
+            }
+        }
+        else if (currentInput == 2)
+        {
+            if (down.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
+                tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f);
+            }
+        }
+        else
+        {
+            if (right.test == false)
+            {
+                Debug.Log("Continue right");
+                Vector3 temp2 = new Vector3(pac.transform.position.x + 1, pac.transform.position.y, pac.transform.position.z);
+                tweener.AddTween(pac.transform, pac.transform.position, temp2, 0.3f);
+            }
+        }
     }
 }
