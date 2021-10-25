@@ -7913,6 +7913,7 @@ GameObject:
   - component: {fileID: 900634205}
   - component: {fileID: 900634207}
   - component: {fileID: 900634206}
+  - component: {fileID: 900634204}
   m_Layer: 0
   m_Name: Pac-Student
   m_TagString: PacStudent
@@ -7997,7 +7998,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 900634200}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 442818ba654ab8946848d35a2740c2b9, type: 2}
   m_CullingMode: 0
@@ -8008,6 +8009,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!111 &900634204
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 900634200}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Animation: {fileID: 0}
+  m_Animations: []
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!82 &900634205
 AudioSource:
   m_ObjectHideFlags: 0
