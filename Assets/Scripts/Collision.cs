@@ -26,11 +26,10 @@ public class Collision : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         solid = true;
-        Debug.Log("trigger stay: " + other.gameObject.name);
     }
+
     private void OnTriggerExit(Collider other)
     {
         solid = false;
-        Debug.Log("out");
     }
 }

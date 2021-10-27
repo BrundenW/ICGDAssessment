@@ -34,7 +34,7 @@ public class Tweener : MonoBehaviour
                 if (Vector3.Distance(activeTweens[i].Target.position, activeTweens[i].EndPos) > 0.1f)
                 {
                     //mathf.pow is x to the power of y for floats, converts this time fraction from linear to cubic easing in
-                    float timeFraction = Mathf.Pow((Time.time - activeTweens[i].StartTime) / activeTweens[i].Duration, 3);
+                    float timeFraction = (Time.time - activeTweens[i].StartTime) / activeTweens[i].Duration;
                     activeTweens[i].Target.position = Vector3.Lerp(activeTweens[i].StartPos, activeTweens[i].EndPos, timeFraction);
                 }
                 else

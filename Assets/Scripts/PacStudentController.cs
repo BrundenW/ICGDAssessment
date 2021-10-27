@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PacStudentController : MonoBehaviour
 {
-    enum direction { left, right, up, down}
     int lastInput;
     int currentInput;
     private Tweener tweener;
@@ -15,6 +14,12 @@ public class PacStudentController : MonoBehaviour
     private GameObject pac;
     private Animator anim;
     public bool stillMove;
+    private new AudioSource audio;
+    public AudioClip normal;
+    public AudioClip pellet;
+    public AudioClip wall;
+    public bool wallHit;
+    private ParticleSystem particle;
 
 
     // Start is called before the first frame update
@@ -24,6 +29,9 @@ public class PacStudentController : MonoBehaviour
         tweener = GetComponent<Tweener>();
         pac = GameObject.FindGameObjectWithTag("PacStudent");
         anim = pac.GetComponent<Animator>();
+        audio = pac.GetComponent<AudioSource>();
+        particle = pac.GetComponent<ParticleSystem>();
+        wallHit = false;
 
     }
     // Update is called once per frame
@@ -33,20 +41,16 @@ public class PacStudentController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             lastInput = 0;
-            //anim.Play("Pac-Student=Left");
-            //Debug.Log(up.test);
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
             lastInput = 1;
-            //anim.Play("Pac-Student-Left")
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
             lastInput = 2;
-            Debug.Log("down pressed");
         }
 
         if (Input.GetKeyDown(KeyCode.D))
@@ -56,92 +60,96 @@ public class PacStudentController : MonoBehaviour
 
         //if (!tweener.TweenExists(pac.transform))
         //{
-            if (lastInput == 0)
-            {
-                //Debug.Log("0");
-                if (up.test == false)
-                {
-                    //add tweener up
-                    //Debug.Log("yes");
-                    
-                    Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y + 1, pac.transform.position.z);
-                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) { 
-                        stillMove = true;
-                        resetAnim();
-                        anim.SetBool("Up", true);
-                        currentInput = 0;
-                    }
-                }
-                else
-                {
-                    continueMove();
-                }
-            }
-            else if (lastInput == 1)
-            {
-                if (left.test == false)
-                {
-                    //add tweener left
-                    //currentInput = 1;
-                    Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
-                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
-                        stillMove = true;
-                        resetAnim();
-                        anim.SetBool("Left", true);
-                        currentInput = 1;
-                    }
-                }
-                else
-                {
-                    continueMove();
-                }
-            }
-            else if (lastInput == 2)
-            {
-                if (down.test == false)
-                {
-                    Debug.Log("not here");
-                    //add tweener down
-                    //currentInput = 2;
-                    Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
-                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
-                        resetAnim();
-                        anim.SetBool("Down", true);
-                        stillMove = true;
-                        currentInput = 2;
-                    }
-                }
-                else
-                {
-                    //Debug.Log("Down bad");
-                    continueMove();
+        if (lastInput == 0)
+        {
+            if (up.test == false)
+            {       
+                Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y + 1, pac.transform.position.z);
+                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) { 
+                    stillMove = true;
+                    particle.Play();
+                    resetAnim();
+                    ResetAudio();
+                    anim.SetBool("Up", true);
+                    currentInput = 0;
                 }
             }
             else
             {
-                if (right.test == false) {
-                    //add tweener right
-                    Debug.Log("right");
-                    //currentInput = 3;
-                    Vector3 temp = new Vector3(pac.transform.position.x + 1, pac.transform.position.y, pac.transform.position.z);
-                    if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
-                        resetAnim();
-                        anim.SetBool("Right", true);
-                        stillMove = true;
-                        currentInput = 3;
-                    }
-                }
-                else
-                {
-                    continueMove();
+                continueMove();
+            }
+        }
+        else if (lastInput == 1)
+        {
+            if (left.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
+                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
+                    stillMove = true;
+                    particle.Play();
+                    resetAnim();
+                    ResetAudio();
+                    anim.SetBool("Left", true);
+                    currentInput = 1;
                 }
             }
+            else
+            {
+                continueMove();
+            }
+        }
+        else if (lastInput == 2)
+        {
+            if (down.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
+                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
+                    resetAnim();
+                    particle.Play();
+                    ResetAudio();
+                    anim.SetBool("Down", true);
+                    stillMove = true;
+                    currentInput = 2;
+                }
+            }
+            else
+            {
+                continueMove();
+            }
+        }
+        else
+        {
+            if (right.test == false) 
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x + 1, pac.transform.position.y, pac.transform.position.z);
+                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
+                    resetAnim();
+                    particle.Play();
+                    ResetAudio();
+                    anim.SetBool("Right", true);
+                    stillMove = true;
+                    currentInput = 3;
+                }
+            }
+            else
+            {
+                continueMove();
+            }
+        }
+
         if (stillMove == false && !tweener.TweenExists(pac.transform))
         {
+            if (wallHit == false)
+            {
+                audio.Stop();
+                audio.clip = wall;
+                audio.loop = false;
+                audio.Play();
+                wallHit = true;
+            }
             resetAnim();
-            //Debug.Log("false");
         }
-        //Debug.Log(stillMove);
+
         stillMove = false;
             
             //bool test = gameObject.transform.GetChild(0).GetComponent<Collision>();
@@ -151,7 +159,6 @@ public class PacStudentController : MonoBehaviour
             //else {
                 //check currentInput to see if you can go in that direction {
                     //if you can, lerp in currentInput direction
-        //}
     }
 
     private void continueMove()
@@ -161,10 +168,10 @@ public class PacStudentController : MonoBehaviour
         {
             if (up.test == false)
             {
-                //stillMove = true;
                 Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y + 1, pac.transform.position.z);
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
+                    particle.Play();
                     stillMove = true;
                 }
             }
@@ -173,10 +180,10 @@ public class PacStudentController : MonoBehaviour
         {
             if (left.test == false)
             {
-                //stillMove = true;
                 Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
+                    particle.Play();
                     stillMove = true;
                 }
             }
@@ -185,10 +192,10 @@ public class PacStudentController : MonoBehaviour
         {
             if (down.test == false)
             {
-                //stillMove = true;
                 Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
+                    particle.Play();
                     stillMove = true;
                 }
             }
@@ -197,11 +204,10 @@ public class PacStudentController : MonoBehaviour
         {
             if (right.test == false)
             {
-                //stillMove = true;
-                Debug.Log("Continue right");
                 Vector3 temp2 = new Vector3(pac.transform.position.x + 1, pac.transform.position.y, pac.transform.position.z);
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp2, 0.3f))
                 {
+                    particle.Play();
                     stillMove = true;
                 }
             }
@@ -214,5 +220,12 @@ public class PacStudentController : MonoBehaviour
         anim.SetBool("Right", false);
         anim.SetBool("Up", false);
         anim.SetBool("Down", false);
+    }
+    private void ResetAudio()
+    {
+        audio.clip = pellet;
+        audio.loop = true;
+        audio.Play();
+        wallHit = false;
     }
 }
