@@ -16,7 +16,9 @@ public class SoundManager : MonoBehaviour
     {
         source = GetComponent<AudioSource>();
         source.loop = true;
-        StartCoroutine(playMusic());
+        source.clip = IntroMusic;
+        source.Play();
+        //StartCoroutine(playMusic());
     }
 
     // Update is called once per frame
@@ -25,12 +27,17 @@ public class SoundManager : MonoBehaviour
         
     }
 
-    IEnumerator playMusic()
+    public void musicStop()
+    {
+        source.Stop();
+    }
+
+    /*IEnumerator playMusic()
     {
         source.clip = IntroMusic;
         source.Play();
         yield return new WaitForSeconds(source.clip.length);
         source.clip = RegularBackgroundMusic;
         source.Play();
-    }
+    }*/
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Collision : MonoBehaviour
+public class WallCollision : MonoBehaviour
 {
     private bool solid = false;
 

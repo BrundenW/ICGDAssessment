@@ -7,10 +7,10 @@ public class PacStudentController : MonoBehaviour
     int lastInput;
     int currentInput;
     private Tweener tweener;
-    public Collision left;
-    public Collision right;
-    public Collision up;
-    public Collision down;
+    public WallCollision left;
+    public WallCollision right;
+    public WallCollision up;
+    public WallCollision down;
     private GameObject pac;
     private Animator anim;
     public bool stillMove;
@@ -20,6 +20,8 @@ public class PacStudentController : MonoBehaviour
     public AudioClip wall;
     public bool wallHit;
     private ParticleSystem particle;
+    public PacCollision pacCollision;
+    public Timer timer;
 
 
     // Start is called before the first frame update
@@ -31,7 +33,7 @@ public class PacStudentController : MonoBehaviour
         anim = pac.GetComponent<Animator>();
         audio = pac.GetComponent<AudioSource>();
         particle = pac.GetComponent<ParticleSystem>();
-        wallHit = false;
+        wallHit = true;
 
     }
     // Update is called once per frame
@@ -40,27 +42,39 @@ public class PacStudentController : MonoBehaviour
         stillMove = false;
         if (Input.GetKeyDown(KeyCode.W))
         {
-            lastInput = 0;
+            lastInput = 1;
         }
 
         if (Input.GetKeyDown(KeyCode.A))
         {
-            lastInput = 1;
+            lastInput = 2;
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
-            lastInput = 2;
+            lastInput = 3;
         }
 
         if (Input.GetKeyDown(KeyCode.D))
         {
-            lastInput = 3;
+            lastInput = 4;
         }
 
         //if (!tweener.TweenExists(pac.transform))
         //{
-        if (lastInput == 0)
+        if (!tweener.TweenExists(pac.transform) && pacCollision.teleport != 0)
+        {
+            if (pacCollision.teleport == 1)
+            {
+                pac.transform.position = new Vector3(26, -14, 0);
+            }
+            else
+            {
+                pac.transform.position = new Vector3(1, -14, 0);
+            }
+            pacCollision.teleport = 0;
+        }
+        if (lastInput == 1)
         {
             if (up.test == false)
             {       
@@ -71,25 +85,6 @@ public class PacStudentController : MonoBehaviour
                     resetAnim();
                     ResetAudio();
                     anim.SetBool("Up", true);
-                    currentInput = 0;
-                }
-            }
-            else
-            {
-                continueMove();
-            }
-        }
-        else if (lastInput == 1)
-        {
-            if (left.test == false)
-            {
-                Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
-                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
-                    stillMove = true;
-                    particle.Play();
-                    resetAnim();
-                    ResetAudio();
-                    anim.SetBool("Left", true);
                     currentInput = 1;
                 }
             }
@@ -100,6 +95,25 @@ public class PacStudentController : MonoBehaviour
         }
         else if (lastInput == 2)
         {
+            if (left.test == false)
+            {
+                Vector3 temp = new Vector3(pac.transform.position.x - 1, pac.transform.position.y, pac.transform.position.z);
+                if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f)) {
+                    stillMove = true;
+                    particle.Play();
+                    resetAnim();
+                    ResetAudio();
+                    anim.SetBool("Left", true);
+                    currentInput = 2;
+                }
+            }
+            else
+            {
+                continueMove();
+            }
+        }
+        else if (lastInput == 3)
+        {
             if (down.test == false)
             {
                 Vector3 temp = new Vector3(pac.transform.position.x, pac.transform.position.y - 1, pac.transform.position.z);
@@ -109,7 +123,7 @@ public class PacStudentController : MonoBehaviour
                     ResetAudio();
                     anim.SetBool("Down", true);
                     stillMove = true;
-                    currentInput = 2;
+                    currentInput = 3;
                 }
             }
             else
@@ -117,7 +131,7 @@ public class PacStudentController : MonoBehaviour
                 continueMove();
             }
         }
-        else
+        else if (lastInput == 4)
         {
             if (right.test == false) 
             {
@@ -128,7 +142,7 @@ public class PacStudentController : MonoBehaviour
                     ResetAudio();
                     anim.SetBool("Right", true);
                     stillMove = true;
-                    currentInput = 3;
+                    currentInput = 4;
                 }
             }
             else
@@ -164,7 +178,7 @@ public class PacStudentController : MonoBehaviour
     private void continueMove()
     {
         //tweener.AddTween(pac.transform, pac.transform.position, new Vector3(0, 0, 0), 1f);
-        if (currentInput == 0)
+        if (currentInput == 1)
         {
             if (up.test == false)
             {
@@ -172,11 +186,12 @@ public class PacStudentController : MonoBehaviour
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
                     particle.Play();
+                    ResetAudio();
                     stillMove = true;
                 }
             }
         }
-        else if (currentInput == 1)
+        else if (currentInput == 2)
         {
             if (left.test == false)
             {
@@ -184,11 +199,12 @@ public class PacStudentController : MonoBehaviour
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
                     particle.Play();
+                    ResetAudio();
                     stillMove = true;
                 }
             }
         }
-        else if (currentInput == 2)
+        else if (currentInput == 3)
         {
             if (down.test == false)
             {
@@ -196,11 +212,12 @@ public class PacStudentController : MonoBehaviour
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp, 0.3f))
                 {
                     particle.Play();
+                    ResetAudio();
                     stillMove = true;
                 }
             }
         }
-        else
+        else if (currentInput == 4)
         {
             if (right.test == false)
             {
@@ -208,6 +225,7 @@ public class PacStudentController : MonoBehaviour
                 if (tweener.AddTween(pac.transform, pac.transform.position, temp2, 0.3f))
                 {
                     particle.Play();
+                    ResetAudio();
                     stillMove = true;
                 }
             }
@@ -223,9 +241,89 @@ public class PacStudentController : MonoBehaviour
     }
     private void ResetAudio()
     {
-        audio.clip = pellet;
-        audio.loop = true;
-        audio.Play();
+        //audio.clip = normal;
+        //audio.loop = true;
+        playAudio();
+        //audio.Play();
         wallHit = false;
+    }
+
+
+    private void playAudio()
+    {
+        if (Time.timeScale != 0)
+        {
+            if (pacCollision.pellet)
+            {
+                audio.clip = pellet;
+                audio.Play();
+                pacCollision.pellet = false;
+            }
+            else
+            {
+                //audio.loop = true;
+                audio.clip = normal;
+                audio.Play();
+            }
+        }
+    }
+
+    public void death()
+    {
+        //Debug.Log("dead1");
+        currentInput = 0;
+        lastInput = 0;
+        tweener.TweenRemove(pac.transform);
+        resetAnim();
+        StartCoroutine(deathAnim());
+
+    }
+
+    private IEnumerator deathAnim()
+    {
+        //Debug.Log("dead");
+        anim.SetBool("Dead", true);
+        yield return new WaitForSecondsRealtime(2);
+        anim.SetBool("Dead", false);
+        pac.transform.position = new Vector3(1, -1, 0);
+        currentInput = 0;
+        lastInput = 0;
+        Time.timeScale = 1;
+    }
+
+    public void GameOver()
+    {
+        //save 
+        float total = timer.total;
+        int mins = timer.minutes;
+        int secs = timer.seconds;
+        float decisecs = timer.deciseconds;
+        int score = pacCollision.scoreCount;
+        if (PlayerPrefs.HasKey("Score"))
+        {
+            if (PlayerPrefs.GetInt("Score") < score)
+            {
+                PlayerPrefs.SetInt("Mins", mins);
+                PlayerPrefs.SetInt("Secs", secs);
+                PlayerPrefs.SetFloat("Decisecs", decisecs);
+                PlayerPrefs.SetFloat("Time", total);
+                PlayerPrefs.SetInt("Score", score);
+            }
+            else if (PlayerPrefs.GetInt("Score") == score && PlayerPrefs.GetFloat("Time") > total)
+            {
+                PlayerPrefs.SetInt("Mins", mins);
+                PlayerPrefs.SetInt("Secs", secs);
+                PlayerPrefs.SetFloat("Decisecs", decisecs);
+                PlayerPrefs.SetFloat("Time", total);
+            }
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Mins", mins);
+            PlayerPrefs.SetInt("Secs", secs);
+            PlayerPrefs.SetFloat("Decisecs", decisecs);
+            PlayerPrefs.SetFloat("Time", total);
+            PlayerPrefs.SetInt("Score", score);
+        }
     }
 }

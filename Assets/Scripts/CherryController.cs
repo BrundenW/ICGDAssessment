@@ -55,4 +55,9 @@ public class CherryController : MonoBehaviour
         tweener.AddTween(itemList[0].transform, origin, destination, 5f);
         startTween = true;
     }
+
+    public void CherryDelete()
+    {
+        tweener.TweenRemove(itemList[0].transform);
+    }
 }

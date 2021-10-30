@@ -6,9 +6,23 @@ using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
+    private SoundManager sound;
+    public Text score;
+    public Text time;
 
+    private void Start()
+    {
+        sound = GetComponent<SoundManager>();
+        if (PlayerPrefs.HasKey("Score"))
+        {
+            score.text = "Previous High Score: " + PlayerPrefs.GetInt("Score").ToString();
+            time.text = "Time: " + PlayerPrefs.GetInt("Mins").ToString("00") + ":" + PlayerPrefs.GetInt("Secs").ToString("00") + ":" + (PlayerPrefs.GetFloat("Decisecs")*100).ToString("00");
+        }
+    }
     public void LevelOneButton()
     {
+        sound.musicStop();
+        Time.timeScale = 0;
         DontDestroyOnLoad(gameObject);
         SceneManager.LoadScene(1);
         SceneManager.sceneLoaded += OnSceneLoaded;
