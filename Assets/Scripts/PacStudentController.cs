@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PacStudentController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class PacStudentController : MonoBehaviour
     private ParticleSystem particle;
     public PacCollision pacCollision;
     public Timer timer;
+    public LevelStart start;
 
 
     // Start is called before the first frame update
@@ -238,6 +240,7 @@ public class PacStudentController : MonoBehaviour
         anim.SetBool("Right", false);
         anim.SetBool("Up", false);
         anim.SetBool("Down", false);
+        anim.SetBool("Dead", false);
     }
     private void ResetAudio()
     {
@@ -278,6 +281,19 @@ public class PacStudentController : MonoBehaviour
         StartCoroutine(deathAnim());
 
     }
+    public void finsihed()
+    {
+        StartCoroutine(finalMove());
+    }
+    private IEnumerator finalMove()
+    {
+        yield return new WaitForSecondsRealtime(0.3f);
+        currentInput = 0;
+        lastInput = 0;
+        tweener.TweenRemove(pac.transform);
+        resetAnim();
+        //resetAnim();
+    }
 
     private IEnumerator deathAnim()
     {
@@ -291,7 +307,26 @@ public class PacStudentController : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    public void GameOver()
+    private IEnumerator gameOverAnim()
+    {
+        anim.SetBool("Dead", true);
+        start.gameOver();
+        yield return new WaitForSecondsRealtime(2);
+        anim.SetBool("Dead", false);
+        yield return new WaitForSecondsRealtime(1);
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
+    }
+
+    private IEnumerator finishedGame()
+    {
+        start.gameOver();
+        yield return new WaitForSecondsRealtime(3);
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
+    }
+
+    public void GameOver(bool dead)
     {
         //save 
         float total = timer.total;
@@ -324,6 +359,16 @@ public class PacStudentController : MonoBehaviour
             PlayerPrefs.SetFloat("Decisecs", decisecs);
             PlayerPrefs.SetFloat("Time", total);
             PlayerPrefs.SetInt("Score", score);
+        }
+        //resetAnim();
+        if (dead)
+        {
+            resetAnim();
+            StartCoroutine(gameOverAnim());
+        }
+        else
+        {
+            StartCoroutine(finishedGame());
         }
     }
 }

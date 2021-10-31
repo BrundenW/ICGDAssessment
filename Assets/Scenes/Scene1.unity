@@ -136,13 +136,14 @@ GameObject:
   - component: {fileID: 18541}
   - component: {fileID: 18543}
   - component: {fileID: 18542}
+  - component: {fileID: 18544}
   m_Layer: 0
   m_Name: Green Ghost
   m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &18539
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -236,7 +237,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 18538}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.6, z: 0.2}
@@ -255,8 +256,22 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 120
+  m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &18544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f4ecee19bce214daadb586971a0ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  controller: {fileID: 1012956899}
 --- !u!1 &6197631
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,6 +391,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 0
+  controller: {fileID: 1012956899}
 --- !u!65 &6197636
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5165,13 +5181,14 @@ GameObject:
   - component: {fileID: 593097286}
   - component: {fileID: 593097288}
   - component: {fileID: 593097287}
+  - component: {fileID: 593097289}
   m_Layer: 0
   m_Name: Blue Ghost
   m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &593097284
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5265,7 +5282,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593097283}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.6, z: 0.2}
@@ -5284,8 +5301,22 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 120
+  m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &593097289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 593097283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f4ecee19bce214daadb586971a0ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  controller: {fileID: 1012956899}
 --- !u!1 &609897754
 GameObject:
   m_ObjectHideFlags: 0
@@ -8168,6 +8199,8 @@ MonoBehaviour:
   lives: 0
   pacController: {fileID: 1012956894}
   ui: {fileID: 739936543}
+  ghosts: {fileID: 1012956899}
+  lvlGen: {fileID: 963194230}
 --- !u!82 &900634205
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8291,7 +8324,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 120
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!199 &900634208
 ParticleSystemRenderer:
@@ -13881,6 +13914,7 @@ MonoBehaviour:
   insideWall: {fileID: 5962450798866325200, guid: 33ab83ee44c3cfb41a1d2c54746c9b6c, type: 3}
   junction: {fileID: 248487147840496815, guid: 412fa8c617cce5d4ea68f518976d62a5, type: 3}
   parent: {fileID: 1503319801}
+  numPellets: 0
 --- !u!1 &968127488
 GameObject:
   m_ObjectHideFlags: 0
@@ -14372,6 +14406,7 @@ MonoBehaviour:
   wallHit: 0
   pacCollision: {fileID: 900634204}
   timer: {fileID: 1012956898}
+  start: {fileID: 739936542}
 --- !u!114 &1012956895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14444,6 +14479,9 @@ MonoBehaviour:
   purple: {fileID: 1161997746}
   green: {fileID: 18538}
   blue: {fileID: 593097283}
+  ghostTimer: {fileID: 1589860652}
+  globalState: 0
+  numDead: 0
 --- !u!1 &1020510587
 GameObject:
   m_ObjectHideFlags: 0
@@ -15826,13 +15864,14 @@ GameObject:
   - component: {fileID: 1161997749}
   - component: {fileID: 1161997751}
   - component: {fileID: 1161997750}
+  - component: {fileID: 1161997752}
   m_Layer: 0
   m_Name: Purple Ghost
   m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1161997747
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -15932,7 +15971,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 120
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!65 &1161997751
 BoxCollider:
@@ -15942,11 +15981,25 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161997746}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.6, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1161997752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1161997746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f4ecee19bce214daadb586971a0ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  state: 0
+  controller: {fileID: 1012956899}
 --- !u!1 &1174773175
 GameObject:
   m_ObjectHideFlags: 0

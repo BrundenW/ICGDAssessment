@@ -32,6 +32,27 @@ public class SoundManager : MonoBehaviour
         source.Stop();
     }
 
+    public void deadMusic()
+    {
+        source.Stop();
+        source.clip = DeadBackgroundMusic;
+        source.Play();
+    }
+
+    public void scaredMusic()
+    {
+        source.Stop();
+        source.clip = ScaredBackgroundMusic;
+        source.Play();
+    }
+
+    public void normalMusic()
+    {
+        source.Stop();
+        source.clip = RegularBackgroundMusic;
+        source.Play();
+    }
+
     /*IEnumerator playMusic()
     {
         source.clip = IntroMusic;

@@ -44,10 +44,12 @@ public class LevelGenerator : MonoBehaviour
     private List<GameObject> segmentsList = new List<GameObject>();
     private float width;
     private float height;
+    public int numPellets;
 
     // Start is called before the first frame update
     void Start()
     {
+        numPellets = 0;
         oldMap.SetActive(false);
         height = levelMap.GetLength(0);
         width = levelMap.GetLength(1);
@@ -62,6 +64,7 @@ public class LevelGenerator : MonoBehaviour
                 segmentsList[0].transform.Rotate(180, 0, 0, Space.World);
                 //segmentsList[1].transform.localScale = new Vector3(-1, -1, 1);
                 segmentsList[1].transform.Rotate(180, 180, 0, Space.World);
+                numPellets *= 2;
             }
             for (int j = 0; j < width; j++)
             {
@@ -148,11 +151,13 @@ public class LevelGenerator : MonoBehaviour
                 else if (levelMap[i, j] == 5)
                 {
                     duplicate(normalPellet, new Vector3(j, -i, 0f), new Vector3(0, 0, 0), true);
+                    numPellets++;
                 }
                 //Power Pellet
                 else if (levelMap[i, j] == 6)
                 {
                     duplicate(powerPellet, new Vector3(j, -i, 0f), new Vector3(0, 0, 0), true);
+                    numPellets++;
                 }
                 //Junction
                 else if (levelMap[i, j] == 7)
@@ -189,6 +194,7 @@ public class LevelGenerator : MonoBehaviour
         segmentsList.Add(Instantiate(parent, new Vector3((2*width - 1), 0f, 0f), Quaternion.identity));
         //segmentsList[2].transform.localScale = new Vector3(-1, 1, 1);
         segmentsList[2].transform.Rotate(0, 180, 0, Space.World);
+        numPellets *= 2;
     }
 
     private void duplicate(GameObject segment, Vector3 position, Vector3 rotation, bool junctionFlip)

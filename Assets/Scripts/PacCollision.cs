@@ -13,6 +13,8 @@ public class PacCollision : MonoBehaviour
     public int lives;
     public PacStudentController pacController;
     public UIController ui;
+    public GhostController ghosts;
+    public LevelGenerator lvlGen;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +27,12 @@ public class PacCollision : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (lvlGen.numPellets == 0)
+        {
+            pacController.finsihed();
+            pacController.GameOver(false);
+            
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -36,6 +43,7 @@ public class PacCollision : MonoBehaviour
             scoreCount += 10;
             score.text = "Score: " + scoreCount.ToString();
             pellet = true;
+            lvlGen.numPellets--;
             //StartCoroutine(pelletEaten());
         }
         if (other.tag == "Cherry")
@@ -60,6 +68,12 @@ public class PacCollision : MonoBehaviour
                 teleport = 2;
             }
         }
+        if (other.tag == "Power")
+        {
+            ghosts.Scared();
+            Destroy(other.gameObject, 0.3f);
+            lvlGen.numPellets--;
+        }
         /*if (other.tag == "Ghost")
         {
             Debug.Log("test Ghost");
@@ -74,10 +88,17 @@ public class PacCollision : MonoBehaviour
         //Debug.Log("Here" + collision.gameObject.name + collision.gameObject.GetComponent<RedGhost>().state);
         if (collision.gameObject.tag == "Ghost")
         {
-            if (collision.gameObject.GetComponent<RedGhost>().state == 0)
+            if (collision.gameObject.GetComponent<GhostState>().state == 0)
             {
                 death();
             }
+
+            if (collision.gameObject.GetComponent<GhostState>().state == 1)
+            {
+                collision.gameObject.GetComponent<GhostState>().ghostEaten();
+                scoreCount += 300;
+                score.text = "Score: " + scoreCount.ToString();
+            }           
         }
     }
     private void OnTriggerExit(Collider other)
@@ -93,7 +114,7 @@ public class PacCollision : MonoBehaviour
             //gameover - save highscore
             ui.death(0);
             Time.timeScale = 0;
-            pacController.GameOver();
+            pacController.GameOver(true);
         }
         else
         {

@@ -9,6 +9,7 @@ public class LevelStart : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        countdown.fontSize = 200;
         StartCoroutine(levelStart());
     }
 
@@ -16,6 +17,13 @@ public class LevelStart : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void gameOver()
+    {
+        countdown.fontSize = 100;
+        countdown.text = "Game Over!";
+        countdown.gameObject.SetActive(true);
     }
 
     private IEnumerator levelStart()
