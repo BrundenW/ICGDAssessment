@@ -79,7 +79,7 @@ public class PacCollision : MonoBehaviour
                 death();
             }
 
-            if (collision.gameObject.GetComponent<GhostState>().state == 1)
+            if (collision.gameObject.GetComponent<GhostState>().state == 1 || collision.gameObject.GetComponent<GhostState>().state == 3)
             {
                 collision.gameObject.GetComponent<GhostState>().ghostEaten();
                 scoreCount += 300;
@@ -102,6 +102,7 @@ public class PacCollision : MonoBehaviour
         {
             lives--;
             pacController.death();
+            ghosts.resetGhosts();
             ui.death(lives);
             
         }

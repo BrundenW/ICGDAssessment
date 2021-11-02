@@ -15,6 +15,8 @@ public class GhostController : MonoBehaviour
     public int numDead;
     private SoundManager sound;
     private Tweener tweener;
+    private bool scared;
+    private bool coroutineRunning;
 
     //the last direction each ghost moved in, to prevent backtracking
     //0 = no move, 1 = up, 2 = left, 3 = down, 4 = right
@@ -49,6 +51,8 @@ public class GhostController : MonoBehaviour
         nextClockwise = new Vector3(1, -1, 0);
         clockwisePositions.AddRange(new List<Vector3> { new Vector3(26, -1, 0), new Vector3(26, -27, 0), new Vector3(1, -27, 0)});
         priority = 1;
+        scared = false;
+        coroutineRunning = false;
     }
 
     // Update is called once per frame
@@ -61,13 +65,13 @@ public class GhostController : MonoBehaviour
                 moveOutSpawn(red);
                 lastMoveRed = 1;
             }
-            else if (purple.GetComponent<GhostState>().state != 2)
+            else if (red.GetComponent<GhostState>().state != 2)
             {
                 lastMoveRed = scaredMovement(red, lastMoveRed);
             }
         }
 
-        /*if (!tweener.TweenExists(purple.transform))
+        if (!tweener.TweenExists(purple.transform))
         {
             if (purple.GetComponent<GhostState>().atSpawn)
             {
@@ -78,7 +82,7 @@ public class GhostController : MonoBehaviour
             {
                 lastMovePurple = aggresiveMovement(purple, lastMovePurple);
             }
-            else if (purple.GetComponent<GhostState>().state == 1)
+            else if (purple.GetComponent<GhostState>().state == 1 || purple.GetComponent<GhostState>().state == 3)
             {
                 lastMovePurple = scaredMovement(purple, lastMovePurple);
             }
@@ -95,7 +99,7 @@ public class GhostController : MonoBehaviour
             {
                 lastMoveGreen = RandomMovement(green, lastMoveGreen);
             }
-            else if (green.GetComponent<GhostState>().state == 1)
+            else if (green.GetComponent<GhostState>().state == 1 || green.GetComponent<GhostState>().state == 3)
             {
                 lastMoveGreen = scaredMovement(green, lastMoveGreen);
             }
@@ -112,11 +116,11 @@ public class GhostController : MonoBehaviour
             {
                 lastMoveBlue = clockwiseMovement(blue, lastMoveBlue);
             }
-            else if (blue.GetComponent<GhostState>().state == 1)
+            else if (blue.GetComponent<GhostState>().state == 1 || blue.GetComponent<GhostState>().state == 3)
             {
                 lastMoveBlue = scaredMovement(blue, lastMoveBlue);
             }
-        }*/
+        }
 
     }
 
@@ -127,7 +131,11 @@ public class GhostController : MonoBehaviour
             sound.scaredMusic();
         }
         globalState = 1;
-        StartCoroutine(ScaredCountdown());
+        scared = true;
+        if (!coroutineRunning)
+        {
+            StartCoroutine(ScaredCountdown());
+        }
         red.GetComponent<GhostState>().becomeScared();
         purple.GetComponent<GhostState>().becomeScared();
         green.GetComponent<GhostState>().becomeScared();
@@ -147,17 +155,37 @@ public class GhostController : MonoBehaviour
         globalState = 0;
     }
 
+    private void recovering()
+    {
+        red.GetComponent<GhostState>().recovering();
+        purple.GetComponent<GhostState>().recovering();
+        green.GetComponent<GhostState>().recovering();
+        blue.GetComponent<GhostState>().recovering();
+        globalState = 3;
+    }
+
     private IEnumerator ScaredCountdown()
     {
+        coroutineRunning = true;
         ghostTimer.text = "10";
         ghostTimer.gameObject.SetActive(true);
         for (int i = 9; i >= 0; i--)
         {
             yield return new WaitForSeconds(1);
             ghostTimer.text = i.ToString();
+            if (i == 5)
+            {
+                recovering();
+            }
+            if (scared)
+            {
+                i = 10;
+                scared = false;
+            }
         }
         ghostTimer.gameObject.SetActive(false);
         scaredOver();
+        coroutineRunning = false;
     }
 
     public void deadMusic()
@@ -178,6 +206,7 @@ public class GhostController : MonoBehaviour
     }
     private void moveOutSpawn(GameObject ghost)
     {
+        ghostAnimDirection(ghost, 1);
         Vector3 temp = new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, ghost.transform.position.z);
         tweener.AddTween(ghost.transform, ghost.transform.position, temp, 0.3f);
     }
@@ -390,5 +419,40 @@ public class GhostController : MonoBehaviour
         ghost.GetComponent<Animator>().SetBool("Left", false);
         ghost.GetComponent<Animator>().SetBool("Down", false);
         ghost.GetComponent<Animator>().SetBool("Right", false);
+    }
+
+    public void resetGhosts()
+    {
+        StartCoroutine(reset());
+    }
+
+    private IEnumerator reset()
+    {
+        tweener.TweenRemove(red.transform);
+        tweener.TweenRemove(blue.transform);
+        tweener.TweenRemove(green.transform);
+        tweener.TweenRemove(purple.transform);
+
+        yield return new WaitForSecondsRealtime(2);
+
+        tweener.TweenRemove(red.transform);
+        tweener.TweenRemove(blue.transform);
+        tweener.TweenRemove(green.transform);
+        tweener.TweenRemove(purple.transform);
+
+        red.transform.position = new Vector3(13, -13, 0);
+        purple.transform.position = new Vector3(13, -14, 0);
+        green.transform.position = new Vector3(14, -13, 0);
+        blue.transform.position = new Vector3(14, -14, 0);
+
+        red.GetComponent<GhostState>().atSpawn = true;
+        purple.GetComponent<GhostState>().atSpawn = true;
+        green.GetComponent<GhostState>().atSpawn = true;
+        blue.GetComponent<GhostState>().atSpawn = true;
+
+        lastMoveRed = 0;
+        lastMovePurple = 0;
+        lastMoveGreen = 0;
+        lastMoveBlue = 0;
     }
 }

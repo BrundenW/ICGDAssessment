@@ -7,7 +7,7 @@ public class GhostState : MonoBehaviour
 {
 
     //private Text timer;
-    public int state; //0 = alive, 1 = scared, 2 = dead;
+    public int state; //0 = alive, 1 = scared, 2 = dead, 3 = recovering;
     public GhostController controller;
     public WallCollision left;
     public WallCollision right;
@@ -73,6 +73,11 @@ public class GhostState : MonoBehaviour
         {
             becomeScared();
         }
+
+        if (controller.globalState == 3)
+        {
+            recovering();
+        }
         
         else
         {
@@ -112,5 +117,15 @@ public class GhostState : MonoBehaviour
         GetComponent<Animator>().SetBool("Scared", false);
         GetComponent<Animator>().SetBool("Dead", false);
         GetComponent<Animator>().SetBool("Recovering", false);
+    }
+
+    public void recovering()
+    {
+        if (state != 2)
+        {
+            resetAnimState();
+            state = 3;
+            GetComponent<Animator>().SetBool("Recovering", true);
+        }
     }
 }

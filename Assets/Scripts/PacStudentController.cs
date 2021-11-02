@@ -297,6 +297,7 @@ public class PacStudentController : MonoBehaviour
         pac.transform.position = new Vector3(1, -1, 0);
         currentInput = 0;
         lastInput = 0;
+        tweener.TweenRemove(pac.transform);
         Time.timeScale = 1;
     }
 
