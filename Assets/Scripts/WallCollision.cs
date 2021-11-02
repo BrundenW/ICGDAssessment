@@ -25,11 +25,25 @@ public class WallCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        solid = true;
+        if (other.tag != "Ghost")
+        {
+            solid = true;
+        }
+        if (other.tag == "Ghost" && transform.parent.gameObject.tag == "Ghost")
+        {
+            solid = true;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        solid = false;
+        //if (other.tag != "Ghost")
+        //{
+            solid = false;
+        //}
+        /*else if (other.tag == "Ghost" && transform.parent.gameObject.tag == "Ghost")
+        {
+            transform.parent.gameObject.GetComponent<GhostState>().atSpawn = false;
+        }*/
     }
 }

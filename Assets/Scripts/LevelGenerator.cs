@@ -15,6 +15,7 @@ public class LevelGenerator : MonoBehaviour
     public GameObject insideWall;
     public GameObject junction;
     public GameObject parent;
+    public GameObject ghostWall;
     private int[,] levelMap = new int[,]
         {
             {1,2,2,2,2,2,2,2,2,2,2,2,2,7},
@@ -29,9 +30,9 @@ public class LevelGenerator : MonoBehaviour
             {1,2,2,2,2,1,5,4,3,4,4,3,0,4},
             {0,0,0,0,0,2,5,4,3,4,4,3,0,3},
             {0,0,0,0,0,2,5,4,4,0,0,0,0,0},
-            {0,0,0,0,0,2,5,4,4,0,3,4,4,0},
+            {0,0,0,0,0,2,5,4,4,0,3,4,4,8},
             {2,2,2,2,2,1,5,3,3,0,4,0,0,0},
-            {0,0,0,0,0,0,5,0,0,0,4,0,0,0},
+            {0,0,0,0,0,8,5,0,0,0,4,0,0,0},
         };
         /*{
             {1, 2, 7, 7, 2 },
@@ -188,6 +189,11 @@ public class LevelGenerator : MonoBehaviour
                             test = true;
                     }
                     duplicate(junction, new Vector3(j, -(float)(i+0.4), 0f), rotation, test);
+                }
+                //ghost block
+                else if (levelMap[i, j] == 8)
+                {
+                    duplicate(ghostWall, new Vector3(j, -i, 0f), new Vector3(0, 0, 0), true);
                 }
             }
         }
