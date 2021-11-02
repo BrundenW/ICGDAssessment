@@ -15,15 +15,28 @@ public class GhostController : MonoBehaviour
     public int numDead;
     private SoundManager sound;
     private Tweener tweener;
-    private int lastMoveRed; //0 = no move, 1 = up, 2 = left, 3 = down, 4 = right
+
+    //the last direction each ghost moved in, to prevent backtracking
+    //0 = no move, 1 = up, 2 = left, 3 = down, 4 = right
+    private int lastMoveRed; 
     private int lastMoveGreen;
     private int lastMovePurple;
     private int lastMoveBlue;
-    private List<Vector3> directions = new List<Vector3>();
-    private List<int> previousDirection = new List<int>();
-    private List<Vector3> directions1 = new List<Vector3>();
-    private List<int> previousDirection1 = new List<int>();
-    //private int state
+
+    //lists of directions to enable different ghost movement types
+    private List<Vector3> randomDirections = new List<Vector3>();
+    private List<int> randomPreviousDirection = new List<int>();
+    private List<Vector3> aggresiveDirections = new List<Vector3>();
+    private List<int> aggresivePreviousDirection = new List<int>();
+    private List<Vector3> scaredDirections = new List<Vector3>();
+    private List<int> scaredPreviousDirection = new List<int>();
+    private List<Vector3> clockwiseDirections = new List<Vector3>();
+    private List<int> clockwisePreviousDirection = new List<int>();
+
+    //to enable clockwise circulation of the map
+    private Vector3 nextClockwise;
+    private List<Vector3> clockwisePositions = new List<Vector3>();
+    private int priority;
 
     // Start is called before the first frame update
     void Start()
@@ -33,21 +46,41 @@ public class GhostController : MonoBehaviour
         globalState = 0;
         numDead = 0;
         tweener = GetComponent<Tweener>();
+        nextClockwise = new Vector3(1, -1, 0);
+        clockwisePositions.AddRange(new List<Vector3> { new Vector3(26, -1, 0), new Vector3(26, -27, 0), new Vector3(1, -27, 0)});
+        priority = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!tweener.TweenExists(purple.transform))
+        if (!tweener.TweenExists(red.transform))
+        {
+            if (red.GetComponent<GhostState>().atSpawn)
+            {
+                moveOutSpawn(red);
+                lastMoveRed = 1;
+            }
+            else if (purple.GetComponent<GhostState>().state != 2)
+            {
+                lastMoveRed = scaredMovement(red, lastMoveRed);
+            }
+        }
+
+        /*if (!tweener.TweenExists(purple.transform))
         {
             if (purple.GetComponent<GhostState>().atSpawn)
             {
                 moveOutSpawn(purple);
                 lastMovePurple = 1;
             }
-            else if (purple.GetComponent<GhostState>().state != 2)
+            else if (purple.GetComponent<GhostState>().state == 0)
             {
-                PurpleMovement();
+                lastMovePurple = aggresiveMovement(purple, lastMovePurple);
+            }
+            else if (purple.GetComponent<GhostState>().state == 1)
+            {
+                lastMovePurple = scaredMovement(purple, lastMovePurple);
             }
         }
 
@@ -58,11 +91,32 @@ public class GhostController : MonoBehaviour
                 moveOutSpawn(green);
                 lastMoveGreen = 1;
             }
-            else if (green.GetComponent<GhostState>().state != 2)
+            else if (green.GetComponent<GhostState>().state == 0)
             {
                 lastMoveGreen = RandomMovement(green, lastMoveGreen);
             }
+            else if (green.GetComponent<GhostState>().state == 1)
+            {
+                lastMoveGreen = scaredMovement(green, lastMoveGreen);
+            }
         }
+
+        if (!tweener.TweenExists(blue.transform))
+        {
+            if (blue.GetComponent<GhostState>().atSpawn)
+            {
+                moveOutSpawn(blue);
+                lastMoveBlue = 1;
+            }
+            else if (blue.GetComponent<GhostState>().state == 0)
+            {
+                lastMoveBlue = clockwiseMovement(blue, lastMoveBlue);
+            }
+            else if (blue.GetComponent<GhostState>().state == 1)
+            {
+                lastMoveBlue = scaredMovement(blue, lastMoveBlue);
+            }
+        }*/
 
     }
 
@@ -130,94 +184,184 @@ public class GhostController : MonoBehaviour
 
     private int RandomMovement(GameObject ghost, int lastMove)
     {
-        directions.Clear();
-        previousDirection.Clear();
+        randomDirections.Clear();
+        randomPreviousDirection.Clear();
         if (!ghost.GetComponent<GhostState>().up.test && lastMove != 3)
         {
-            directions.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, ghost.transform.position.z));
-            previousDirection.Add(1);
+            randomDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, ghost.transform.position.z));
+            randomPreviousDirection.Add(1);
         }
         if (!ghost.GetComponent<GhostState>().left.test && lastMove != 4)
         {
-            directions.Add(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, ghost.transform.position.z));
-            previousDirection.Add(2);
+            randomDirections.Add(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, ghost.transform.position.z));
+            randomPreviousDirection.Add(2);
         }
         if (!ghost.GetComponent<GhostState>().down.test && lastMove != 1)
         {
-            directions.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, ghost.transform.position.z));
-            previousDirection.Add(3);
+            randomDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, ghost.transform.position.z));
+            randomPreviousDirection.Add(3);
         }
         if (!ghost.GetComponent<GhostState>().right.test && lastMove != 2)
         {
-            directions.Add(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, ghost.transform.position.z));
-            previousDirection.Add(4);
+            randomDirections.Add(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, ghost.transform.position.z));
+            randomPreviousDirection.Add(4);
         }
 
-        /*foreach (Vector3 temp in directions)
-        {
-            Debug.Log(temp);
-        }*/
-        int movement = Random.Range(0, directions.Count);
-        tweener.AddTween(ghost.transform, ghost.transform.position, directions[movement], 0.3f);
-        return (previousDirection[movement]);
+        int movement = Random.Range(0, randomDirections.Count);
+        tweener.AddTween(ghost.transform, ghost.transform.position, randomDirections[movement], 0.3f);
+        ghostAnimDirection(ghost, randomPreviousDirection[movement]);
+        return (randomPreviousDirection[movement]);
 
     }
 
-    private void PurpleMovement()
+    private int aggresiveMovement(GameObject ghost, int lastMove)
     {
-        directions1.Clear();
-        previousDirection1.Clear();
-        float dist = Vector3.Distance(purple.transform.position, pac.transform.position);
-        Debug.Log("Pac Distance = " + dist);
-        Debug.Log("up.test = " + purple.GetComponent<GhostState>().up.test + ", lastMovePurple = " + lastMovePurple + ", distance = " + Vector3.Distance(new Vector3(purple.transform.position.x, purple.transform.position.y + 1, 0), pac.transform.position)); 
-        if (!purple.GetComponent<GhostState>().up.test && lastMovePurple != 3 && Vector3.Distance(new Vector3(purple.transform.position.x, purple.transform.position.y + 1, 0), pac.transform.position) <= dist)
+        aggresiveDirections.Clear();
+        aggresivePreviousDirection.Clear();
+        float dist = Vector3.Distance(ghost.transform.position, pac.transform.position);
+        if (!ghost.GetComponent<GhostState>().up.test && lastMove != 3 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0), pac.transform.position) <= dist)
         {
-            Debug.Log("here1");
-            directions1.Add(new Vector3(purple.transform.position.x, purple.transform.position.y + 1, purple.transform.position.z));
-            previousDirection1.Add(1);
-            Debug.Log("Vector = " + new Vector3(purple.transform.position.x, purple.transform.position.y + 1, purple.transform.position.z) + ", Distance = " + Vector3.Distance(purple.transform.GetChild(3).transform.position, pac.transform.position));
+            aggresiveDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0));
+            aggresivePreviousDirection.Add(1);
         }
-        Debug.Log("here5");
-        if (!purple.GetComponent<GhostState>().left.test && lastMovePurple != 4 && Vector3.Distance(new Vector3(purple.transform.position.x - 1, purple.transform.position.y, 0), pac.transform.position) <= dist)
+        if (!ghost.GetComponent<GhostState>().left.test && lastMove != 4 && Vector3.Distance(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0), pac.transform.position) <= dist)
         {
-            Debug.Log("here2");
-            directions1.Add(new Vector3(purple.transform.position.x - 1, purple.transform.position.y, purple.transform.position.z));
-            previousDirection1.Add(2);
-            Debug.Log("Left detector = " + purple.transform.GetChild(0).transform.position + ", right detector = " + purple.transform.GetChild(1).transform.position);
-            Debug.Log("Vector = " + new Vector3(purple.transform.position.x - 1, purple.transform.position.y, purple.transform.position.z) + ", Distance = " + Vector3.Distance(purple.transform.GetChild(3).transform.position, pac.transform.position));
+            aggresiveDirections.Add(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0));
+            aggresivePreviousDirection.Add(2);
         }
-        Debug.Log("here6");
-        if (!purple.GetComponent<GhostState>().down.test && lastMovePurple != 1 && Vector3.Distance(new Vector3(purple.transform.position.x, purple.transform.position.y - 1, 0), pac.transform.position) <= dist)
+        if (!ghost.GetComponent<GhostState>().down.test && lastMove != 1 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0), pac.transform.position) <= dist)
         {
-            Debug.Log("here3");
-            directions1.Add(new Vector3(purple.transform.position.x, purple.transform.position.y - 1, purple.transform.position.z));
-            previousDirection1.Add(3);
-            Debug.Log("Vector = " + new Vector3(purple.transform.position.x, purple.transform.position.y - 1, purple.transform.position.z) + ", Distance = " + Vector3.Distance(purple.transform.GetChild(3).transform.position, pac.transform.position));
+            aggresiveDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0));
+            aggresivePreviousDirection.Add(3);
         }
-        Debug.Log("here7");
-        if (!purple.GetComponent<GhostState>().right.test && lastMovePurple != 2 && Vector3.Distance(new Vector3(purple.transform.position.x + 1, purple.transform.position.y, 0), pac.transform.position) <= dist)
+        if (!ghost.GetComponent<GhostState>().right.test && lastMove != 2 && Vector3.Distance(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0), pac.transform.position) <= dist)
         {
-            Debug.Log("here4");
-            Debug.Log("Left detector = " + purple.transform.GetChild(0).transform.position + ", right detector = " + purple.transform.GetChild(1).transform.position);
-            Debug.Log("Vector = " + new Vector3(purple.transform.position.x + 1, purple.transform.position.y, purple.transform.position.z) + ", Distance = " + Vector3.Distance(purple.transform.GetChild(3).transform.position, pac.transform.position));
-            directions1.Add(new Vector3(purple.transform.position.x + 1, purple.transform.position.y, purple.transform.position.z));
-            previousDirection1.Add(4);
+            aggresiveDirections.Add(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0));
+            aggresivePreviousDirection.Add(4);
         }
 
-        Debug.Log("here8 " + directions1.Count);
-        /*foreach (Vector3 temp1 in directions1)
+        if (aggresiveDirections.Count == 0)
         {
-            Debug.Log(temp1);
-        }*/
-        if (directions1.Count == 0)
-        {
-            lastMovePurple = RandomMovement(purple, lastMovePurple);
+            return (RandomMovement(ghost, lastMove));
         }
         else
         {
-            int movement1 = Random.Range(0, directions1.Count);
-            tweener.AddTween(purple.transform, purple.transform.position, directions1[movement1], 0.3f);
-            lastMovePurple = previousDirection1[movement1];
+            int movement = Random.Range(0, aggresiveDirections.Count);
+            tweener.AddTween(ghost.transform, ghost.transform.position, aggresiveDirections[movement], 0.3f);
+            ghostAnimDirection(ghost, aggresivePreviousDirection[movement]);
+            return (aggresivePreviousDirection[movement]);
+        }
+    }
+
+    private int scaredMovement(GameObject ghost, int lastMove)
+    {
+        scaredDirections.Clear();
+        scaredPreviousDirection.Clear();
+        float dist = Vector3.Distance(ghost.transform.position, pac.transform.position);
+        if (!ghost.GetComponent<GhostState>().up.test && lastMove != 3 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0), pac.transform.position) >= dist)
+        {
+            scaredDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0));
+            scaredPreviousDirection.Add(1);
+        }
+        if (!ghost.GetComponent<GhostState>().left.test && lastMove != 4 && Vector3.Distance(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0), pac.transform.position) >= dist)
+        {
+            scaredDirections.Add(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0));
+            scaredPreviousDirection.Add(2);
+        }
+        if (!ghost.GetComponent<GhostState>().down.test && lastMove != 1 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0), pac.transform.position) >= dist)
+        {
+            scaredDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0));
+            scaredPreviousDirection.Add(3);
+        }
+        if (!ghost.GetComponent<GhostState>().right.test && lastMove != 2 && Vector3.Distance(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0), pac.transform.position) >= dist)
+        {
+            scaredDirections.Add(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0));
+            scaredPreviousDirection.Add(4);
+        }
+
+        if (scaredDirections.Count == 0)
+        {
+            return(RandomMovement(ghost, lastMove));
+        }
+        else
+        {
+            int movement = Random.Range(0, scaredDirections.Count);
+            tweener.AddTween(ghost.transform, ghost.transform.position, scaredDirections[movement], 0.3f);
+            ghostAnimDirection(ghost, scaredPreviousDirection[movement]);
+            return (scaredPreviousDirection[movement]);
+        }
+    }
+
+    private int clockwiseMovement(GameObject ghost, int lastMove)
+    {
+        clockwiseDirections.Clear();
+        clockwisePreviousDirection.Clear();
+        float dist = Vector3.Distance(ghost.transform.position, nextClockwise);
+        if (dist <= 1)
+        {
+            clockwisePositions.Add(nextClockwise);
+            nextClockwise = clockwisePositions[0];
+            clockwisePositions.RemoveAt(0);
+            priority++;
+            if (priority == 5)
+            {
+                priority = 1;
+            }
+        }
+        if (!ghost.GetComponent<GhostState>().up.test && lastMove != 3 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0), nextClockwise) <= dist)
+        {
+            clockwiseDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y + 1, 0));
+            clockwisePreviousDirection.Add(1);
+        }
+        if (!ghost.GetComponent<GhostState>().left.test && lastMove != 4 && Vector3.Distance(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0), nextClockwise) <= dist)
+        {
+            if (priority == 1)
+            {
+                clockwiseDirections.Insert(0, new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0));
+                clockwisePreviousDirection.Insert(0,2);
+            }
+            else
+            {
+                clockwiseDirections.Add(new Vector3(ghost.transform.position.x - 1, ghost.transform.position.y, 0));
+                clockwisePreviousDirection.Add(2);
+            }
+        }
+        if (!ghost.GetComponent<GhostState>().down.test && lastMove != 1 && Vector3.Distance(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0), nextClockwise) <= dist)
+        {
+            if (priority == 4)
+            {
+                clockwiseDirections.Insert(0, new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0));
+                clockwisePreviousDirection.Insert(0, 3);
+            }
+            else
+            {
+                clockwiseDirections.Add(new Vector3(ghost.transform.position.x, ghost.transform.position.y - 1, 0));
+                clockwisePreviousDirection.Add(3);
+            }
+        }
+        if (!ghost.GetComponent<GhostState>().right.test && lastMove != 2 && Vector3.Distance(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0), nextClockwise) <= dist)
+        {
+            if (priority == 3)
+            {
+                clockwiseDirections.Insert(0, new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0));
+                clockwisePreviousDirection.Insert(0, 4);
+            } 
+            else
+            {
+                clockwiseDirections.Add(new Vector3(ghost.transform.position.x + 1, ghost.transform.position.y, 0));
+                clockwisePreviousDirection.Add(4);
+            }
+        }
+
+        if (clockwiseDirections.Count == 0)
+        {
+            return (RandomMovement(ghost, lastMove));
+        }
+        else
+        {
+            tweener.AddTween(ghost.transform, ghost.transform.position, clockwiseDirections[0], 0.3f);
+            ghostAnimDirection(ghost, clockwisePreviousDirection[0]);
+            return (clockwisePreviousDirection[0]);
         }
     }
 
@@ -225,5 +369,26 @@ public class GhostController : MonoBehaviour
     {
         tweener.TweenRemove(ghost.transform);
         tweener.AddTween(ghost.transform, ghost.transform.position, new Vector3(13, -13, 0), 5);
+    }
+
+    private void ghostAnimDirection(GameObject ghost, int direction)
+    {
+        resetAnimDirection(ghost);
+        if (direction == 1)
+            ghost.GetComponent<Animator>().SetBool("Up", true);
+        else if (direction == 2)
+            ghost.GetComponent<Animator>().SetBool("Left", true);
+        else if (direction == 3)
+            ghost.GetComponent<Animator>().SetBool("Down", true);
+        else if (direction == 4)
+            ghost.GetComponent<Animator>().SetBool("Right", true);
+    }
+
+    private void resetAnimDirection(GameObject ghost)
+    {
+        ghost.GetComponent<Animator>().SetBool("Up", false);
+        ghost.GetComponent<Animator>().SetBool("Left", false);
+        ghost.GetComponent<Animator>().SetBool("Down", false);
+        ghost.GetComponent<Animator>().SetBool("Right", false);
     }
 }

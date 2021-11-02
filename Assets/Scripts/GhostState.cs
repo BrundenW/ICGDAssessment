@@ -32,15 +32,14 @@ public class GhostState : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log(gameObject.name + ": left = " + left.test + " right = " + right.test + " up =" + up.test + " down = " + down.test);
-        }
+        
     }
 
     public void becomeScared()
     {
         state = 1;
+        resetAnimState();
+        GetComponent<Animator>().SetBool("Scared", true);
         //StartCoroutine(ScaredCountdown());
     }
 
@@ -48,6 +47,7 @@ public class GhostState : MonoBehaviour
     {
         if (state != 2)
         {
+            resetAnimState();
             state = 0;
         }
     }
@@ -58,9 +58,11 @@ public class GhostState : MonoBehaviour
         {
             controller.deadMusic();
         }
+        resetAnimState();
+        GetComponent<Animator>().SetBool("Dead", true);
         state = 2;
         controller.numDead++;
-        GetComponent<SpriteRenderer>().enabled = false;
+        //GetComponent<SpriteRenderer>().enabled = false;
         controller.deadGhost(gameObject);
         StartCoroutine(deadCountdown());
     }
@@ -90,7 +92,7 @@ public class GhostState : MonoBehaviour
     private IEnumerator deadCountdown()
     {
         yield return new WaitForSeconds(5);
-        GetComponent<SpriteRenderer>().enabled = true;
+        //GetComponent<SpriteRenderer>().enabled = true;
         state = -1;
         atSpawn = true;
         returnToGlobalState();
@@ -103,5 +105,12 @@ public class GhostState : MonoBehaviour
         {
             atSpawn = false;
         }
+    }
+
+    private void resetAnimState()
+    {
+        GetComponent<Animator>().SetBool("Scared", false);
+        GetComponent<Animator>().SetBool("Dead", false);
+        GetComponent<Animator>().SetBool("Recovering", false);
     }
 }

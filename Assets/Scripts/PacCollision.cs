@@ -44,24 +44,19 @@ public class PacCollision : MonoBehaviour
             score.text = "Score: " + scoreCount.ToString();
             pellet = true;
             lvlGen.numPellets--;
-            //StartCoroutine(pelletEaten());
         }
         if (other.tag == "Cherry")
         {
             cherry.CherryDelete();
-            //Destroy(other.gameObject, 0.3f);
             scoreCount += 100;
             score.text = "Score: " + scoreCount.ToString();
             pellet = true;
         }
         if (other.tag == "Teleporter")
         {
-            //Debug.Log("here" + other.transform.position.x);
-            //teleport = true;
             if (other.transform.position.x == 0)
             {
                 teleport = 1;
-                //gameObject.transform.position = new Vector3(30, -14, 0);
             }
             else
             {
@@ -74,18 +69,9 @@ public class PacCollision : MonoBehaviour
             Destroy(other.gameObject, 0.3f);
             lvlGen.numPellets--;
         }
-        /*if (other.tag == "Ghost")
-        {
-            Debug.Log("test Ghost");
-            if (other.GetComponent<RedGhost>().state == 0)
-            {
-                death();
-            }
-        }*/
     }
     private void OnCollisionStay(Collision collision)
     {
-        //Debug.Log("Here" + collision.gameObject.name + collision.gameObject.GetComponent<RedGhost>().state);
         if (collision.gameObject.tag == "Ghost")
         {
             if (collision.gameObject.GetComponent<GhostState>().state == 0)
@@ -100,10 +86,6 @@ public class PacCollision : MonoBehaviour
                 score.text = "Score: " + scoreCount.ToString();
             }           
         }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        Debug.Log("test");
     }
 
     private void death()
@@ -123,7 +105,5 @@ public class PacCollision : MonoBehaviour
             ui.death(lives);
             
         }
-        //Debug.Log("hello");
-        //Time.timeScale = 1;
     }
 }

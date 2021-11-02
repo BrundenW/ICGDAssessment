@@ -244,10 +244,7 @@ public class PacStudentController : MonoBehaviour
     }
     private void ResetAudio()
     {
-        //audio.clip = normal;
-        //audio.loop = true;
         playAudio();
-        //audio.Play();
         wallHit = false;
     }
 
@@ -264,7 +261,6 @@ public class PacStudentController : MonoBehaviour
             }
             else
             {
-                //audio.loop = true;
                 audio.clip = normal;
                 audio.Play();
             }
@@ -273,7 +269,6 @@ public class PacStudentController : MonoBehaviour
 
     public void death()
     {
-        //Debug.Log("dead1");
         currentInput = 0;
         lastInput = 0;
         tweener.TweenRemove(pac.transform);
@@ -292,12 +287,10 @@ public class PacStudentController : MonoBehaviour
         lastInput = 0;
         tweener.TweenRemove(pac.transform);
         resetAnim();
-        //resetAnim();
     }
 
     private IEnumerator deathAnim()
     {
-        //Debug.Log("dead");
         anim.SetBool("Dead", true);
         yield return new WaitForSecondsRealtime(2);
         anim.SetBool("Dead", false);

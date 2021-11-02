@@ -52,9 +52,4 @@ public class ButtonManager : MonoBehaviour
             Destroy(GameObject.FindGameObjectWithTag("Manager"));
         }
     }
-
-    private void Awake()
-    {
-        //DontDestroyOnLoad(gameObject);
-    }
 }
