@@ -181,6 +181,7 @@ public class GhostController : MonoBehaviour
             {
                 i = 10;
                 scared = false;
+                
             }
         }
         ghostTimer.gameObject.SetActive(false);
@@ -397,7 +398,7 @@ public class GhostController : MonoBehaviour
     public void deadGhost(GameObject ghost)
     {
         tweener.TweenRemove(ghost.transform);
-        tweener.AddTween(ghost.transform, ghost.transform.position, new Vector3(13, -13, 0), 5);
+        tweener.AddTween(ghost.transform, ghost.transform.position, new Vector3(13, -13, 0), 4);
     }
 
     private void ghostAnimDirection(GameObject ghost, int direction)
@@ -433,7 +434,7 @@ public class GhostController : MonoBehaviour
         tweener.TweenRemove(green.transform);
         tweener.TweenRemove(purple.transform);
 
-        yield return new WaitForSecondsRealtime(2);
+        yield return new WaitForSecondsRealtime(3);
 
         tweener.TweenRemove(red.transform);
         tweener.TweenRemove(blue.transform);

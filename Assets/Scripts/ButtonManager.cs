@@ -30,7 +30,7 @@ public class ButtonManager : MonoBehaviour
 
     public void LevelTwoButton()
     {
-        Debug.Log("pressed");
+        Debug.Log("Level 2 is a lie");
     }
 
     public void ExitButton()

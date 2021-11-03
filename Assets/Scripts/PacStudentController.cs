@@ -21,6 +21,8 @@ public class PacStudentController : MonoBehaviour
     public AudioClip wall;
     public bool wallHit;
     private ParticleSystem particle;
+    private ParticleSystem deathParticle;
+    private Transform wallParticle;
     public PacCollision pacCollision;
     public Timer timer;
     public LevelStart start;
@@ -34,32 +36,36 @@ public class PacStudentController : MonoBehaviour
         pac = GameObject.FindGameObjectWithTag("PacStudent");
         anim = pac.GetComponent<Animator>();
         audio = pac.GetComponent<AudioSource>();
-        particle = pac.GetComponent<ParticleSystem>();
+        particle = pac.transform.GetChild(6).GetComponent<ParticleSystem>();
+        deathParticle = pac.transform.GetChild(4).GetComponent<ParticleSystem>();
+        wallParticle = pac.transform.GetChild(5);
         wallHit = true;
-
     }
     // Update is called once per frame
     void Update()
     {
         stillMove = false;
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Time.timeScale != 0)
         {
-            lastInput = 1;
-        }
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                lastInput = 1;
+            }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            lastInput = 2;
-        }
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                lastInput = 2;
+            }
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            lastInput = 3;
-        }
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+                lastInput = 3;
+            }
 
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            lastInput = 4;
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                lastInput = 4;
+            }
         }
 
         //if (!tweener.TweenExists(pac.transform))
@@ -155,8 +161,26 @@ public class PacStudentController : MonoBehaviour
 
         if (stillMove == false && !tweener.TweenExists(pac.transform))
         {
-            if (wallHit == false)
+            if (wallHit == false && lastInput !=0)
             {
+                Debug.Log("out");
+                if (lastInput == 1)
+                {
+                    wallParticle.position = new Vector3(pac.transform.position.x, pac.transform.position.y + 0.8f, 0);
+                }
+                else if (lastInput == 2)
+                {
+                    wallParticle.position = new Vector3(pac.transform.position.x - 0.8f, pac.transform.position.y, 0);
+                }
+                else if (lastInput == 3)
+                {
+                    wallParticle.position = new Vector3(pac.transform.position.x, pac.transform.position.y - 0.8f, 0);
+                }
+                else if (lastInput == 4)
+                {
+                    wallParticle.position = new Vector3(pac.transform.position.x + 0.8f, pac.transform.position.y, 0);
+                }
+                wallParticle.GetComponent<ParticleSystem>().Play();
                 audio.Stop();
                 audio.clip = wall;
                 audio.loop = false;
@@ -240,7 +264,6 @@ public class PacStudentController : MonoBehaviour
         anim.SetBool("Right", false);
         anim.SetBool("Up", false);
         anim.SetBool("Down", false);
-        anim.SetBool("Dead", false);
     }
     private void ResetAudio()
     {
@@ -273,9 +296,11 @@ public class PacStudentController : MonoBehaviour
         lastInput = 0;
         tweener.TweenRemove(pac.transform);
         resetAnim();
+        Debug.Log("respawn");
         StartCoroutine(deathAnim());
 
     }
+
     public void finsihed()
     {
         StartCoroutine(finalMove());
@@ -291,25 +316,35 @@ public class PacStudentController : MonoBehaviour
 
     private IEnumerator deathAnim()
     {
+        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
+        Debug.Log("dead");
         anim.SetBool("Dead", true);
-        yield return new WaitForSecondsRealtime(2);
+        yield return new WaitForSecondsRealtime(1);
         anim.SetBool("Dead", false);
+        yield return new WaitForSecondsRealtime(0.5f);
+        deathParticle.Play();
+        yield return new WaitForSecondsRealtime(1.5f);       
         pac.transform.position = new Vector3(1, -1, 0);
         currentInput = 0;
         lastInput = 0;
         tweener.TweenRemove(pac.transform);
         Time.timeScale = 1;
+        anim.updateMode = AnimatorUpdateMode.Normal;
     }
 
     private IEnumerator gameOverAnim()
     {
+        anim.updateMode = AnimatorUpdateMode.UnscaledTime;
         anim.SetBool("Dead", true);
         start.gameOver();
-        yield return new WaitForSecondsRealtime(2);
-        anim.SetBool("Dead", false);
         yield return new WaitForSecondsRealtime(1);
+        anim.SetBool("Dead", false);
+        yield return new WaitForSecondsRealtime(0.5f);
+        deathParticle.Play();
+        yield return new WaitForSecondsRealtime(1.5f);
         Time.timeScale = 1;
         SceneManager.LoadScene(0);
+        anim.updateMode = AnimatorUpdateMode.Normal;
     }
 
     private IEnumerator finishedGame()

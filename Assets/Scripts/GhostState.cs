@@ -37,9 +37,12 @@ public class GhostState : MonoBehaviour
 
     public void becomeScared()
     {
-        state = 1;
-        resetAnimState();
-        GetComponent<Animator>().SetBool("Scared", true);
+        if (state != 2)
+        {
+            state = 1;
+            resetAnimState();
+            GetComponent<Animator>().SetBool("Scared", true);
+        }
         //StartCoroutine(ScaredCountdown());
     }
 
@@ -74,7 +77,7 @@ public class GhostState : MonoBehaviour
             becomeScared();
         }
 
-        if (controller.globalState == 3)
+        else if (controller.globalState == 3)
         {
             recovering();
         }
