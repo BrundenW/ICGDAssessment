@@ -30,20 +30,11 @@ public class LevelStart : MonoBehaviour
     {
         countdown.text = "3";
         yield return new WaitForSecondsRealtime(1);
-        countdown.gameObject.SetActive(false);
-        yield return new WaitForSecondsRealtime(1);
         countdown.text = "2";
-        countdown.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1);
-        countdown.gameObject.SetActive(false);
         yield return new WaitForSecondsRealtime(1);
         countdown.text = "1";
-        countdown.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1);
-        countdown.gameObject.SetActive(false);
         yield return new WaitForSecondsRealtime(1);
         countdown.text = "GO!";
-        countdown.gameObject.SetActive(true);
         yield return new WaitForSecondsRealtime(1);
         countdown.gameObject.SetActive(false);
         Time.timeScale = 1;

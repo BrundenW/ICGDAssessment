@@ -24486,6 +24486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 4150526295302084009, guid: ebc914925910a8747a66d5ddf83a0e51, type: 3}
+  cam: {fileID: 963194227}
 --- !u!114 &1012956898
 MonoBehaviour:
   m_ObjectHideFlags: 0
